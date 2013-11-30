@@ -6,6 +6,13 @@
 #include<string>
 #include<cstdlib>
 #include<algorithm>
+#include <unistd.h>
+#include <sys/types.h>
+#include <errno.h>
+#include <stdio.h>
+#include <sys/wait.h>
+#include <stdlib.h>
+#include <openssl/md5.h>
 #include "remodelTypes.h"
 #include "remodelGlobals.h"
 #include "functionDefinitions.h"

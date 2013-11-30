@@ -3,7 +3,7 @@
 
 #define SIZE 100;
 #define DEFAULT_TARGET "Default"
-#define MAKEFILE "makefile"
+#define MAKEFILE "remodelFile"
 
 #include<string>
 #include<vector>
@@ -14,6 +14,7 @@ typedef struct dependencyNode_t
     string target;
     vector<string> source;
     string command;
+    int order;
 }dependencyNode;
 
 #endif

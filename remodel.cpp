@@ -6,7 +6,24 @@ dependencyNode makeNode(string target, vector<string> vList, string command)
     d.target = target;
     d.source = vList;
     d.command = command;
+    d.order = -1;
     return d;
+}
+
+void computeMd5OfFile(char* fileName)
+{
+    unsigned char result[MD5_DIGEST_LENGTH];
+    std::ifstream ifs(fileName);
+    std::string content( (std::istreambuf_iterator<char>(ifs) ),
+                       (std::istreambuf_iterator<char>()    ) );
+
+    MD5((unsigned char*) content.c_str(), content.size(), result);
+}
+
+void findAndParseRoot(char* root)
+{
+
+
 }
 
 void parseInputFile(char* root)
@@ -14,12 +31,11 @@ void parseInputFile(char* root)
     fstream fp;
     string line;
     fp.open(MAKEFILE);
-    cout<<"Here"<<endl;
     while(getline(fp, line))
     {
         parseLine(line);
     }
-    //findAndParseRoot(root);
+    findAndParseRoot(root);
 }
 
 vector<string> parseAndFillDependencyList(string currentDependencies)
@@ -39,7 +55,7 @@ vector<string> parseAndFillDependencyList(string currentDependencies)
 
     /*Deal with last entry*/
     /*There is only one dependency. Eliminate command now*/
-    found = currentDependencies.find_first_of("\:");
+    found = currentDependencies.find_first_of(":");
     if(found == string::npos)
     {
         vList.push_back(currentDependencies);
@@ -79,7 +95,7 @@ void parseLine(string line)
         /*Deal with the command*/
         found = currentDependencies.find("\"");
         if(found != string::npos)
-        command = currentDependencies.substr(found, currentDependencies.length() - 1 - found);
+        command = currentDependencies.substr(found, currentDependencies.length() - found);
 
     }
     depList.push_back(makeNode(target, vList, command));
