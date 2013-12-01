@@ -2,7 +2,7 @@
 #define REMODEL_TYPES_H
 
 #define SIZE 100;
-#define DEFAULT_TARGET "Default"
+#define DEFAULT_TARGET "DEFAULT"
 #define MAKEFILE "remodelFile"
 
 #include<string>
@@ -15,6 +15,8 @@ typedef struct dependencyNode_t
     vector<string> source;
     string command;
     int order;
+    bool isResolved;
+    int depth;
 }dependencyNode;
 
 #endif

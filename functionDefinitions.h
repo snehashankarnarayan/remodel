@@ -5,5 +5,7 @@
 
 void parseInputFile(char* inputFile);
 void parseLine(string line);
+void printOutput();
+string removeWhiteSpace(string);
 
 #endif
