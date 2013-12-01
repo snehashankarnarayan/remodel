@@ -1,0 +1,5 @@
+DEFAULT <- a
+a <- b,c:
+b <- d
+d <- e
+c <- e,f:

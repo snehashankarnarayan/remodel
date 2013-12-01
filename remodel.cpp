@@ -23,21 +23,20 @@ void computeMd5OfFile(char* fileName)
     MD5((unsigned char*) content.c_str(), content.size(), result);
 }
 
-void findAndParseRoot(const char* str)
+void findAndParseRoot()
 {
-   /* string root = str;
     for(int i=0; i<depList.size(); i++)
     {
-        if(depList[i].source == root)
+        if(depList[i].target == rootTarget)
         {
             /* Make it the last statement to be evaluated*/
-          /*  depList[i].order = depList.size();
+            depList[i].order = depList.size();
             break;
         }
-    }*/
+    }
 }
 
-void parseInputFile(char* root)
+void parseInputFile()
 {
     fstream fp;
     string line;
@@ -46,7 +45,6 @@ void parseInputFile(char* root)
     {
         parseLine(line);
     }
-    findAndParseRoot(root);
 }
 
 vector<string> parseAndFillDependencyList(string currentDependencies)
@@ -69,16 +67,18 @@ vector<string> parseAndFillDependencyList(string currentDependencies)
     found = currentDependencies.find_first_of(":");
     if(found == string::npos)
     {
-        if(currentDependencies != " " || currentDependencies != "")
+        if(currentDependencies.size())
         {
             vList.push_back(currentDependencies);
         }
     }
     else
     {
-        if((found - prev - 1) != 0)
+        string str = currentDependencies.substr(prev, found - prev);
+        str = removeWhiteSpace(str);
+        if(str.size())
         {
-            vList.push_back(currentDependencies.substr(prev+1, found - prev -1));
+            vList.push_back(str);
         }
     }
 
@@ -230,33 +230,38 @@ void determineOrderOfExec()
     printOutput();
     /*Resolve leaf nodes*/
     buildLeafNodes();
-  //  printOutput();
+    printOutput();
     /*Resolve the other nodes*/
     while(allNotResolved())
     {
         for(int i=0; i<depList.size(); i++)
         {
             maxDepth = -1;
-            if(areAllSourcesResolved(i, iterationCount, maxDepth))
+            if(!depList[i].isResolved)
             {
-                depList[i].isResolved = true;
-                depList[i].depth = iterationCount;
-                if(maxDepth == iterationCount)
+                if(areAllSourcesResolved(i, iterationCount, maxDepth))
                 {
-                    /*This node's dependency was also involved in the current iteration, so the dependent node should
-                    be built first*/
-                    depList[i].order = ++globalOrder;
-                }
-                else
-                {
-                    depList[i].order = globalOrder;
-                }
+                    depList[i].isResolved = true;
+                    depList[i].depth = iterationCount;
+                    if(maxDepth == iterationCount)
+                    {
+                        /*This node's dependency was also involved in the current iteration, so the dependent node should
+                        be built first*/
+                        depList[i].order = ++globalOrder;
+                    }
+                    else
+                    {
+                        depList[i].order = globalOrder;
+                    }
 
+                }
             }
         }
 
         ++iterationCount;
     }
+
+    findAndParseRoot();
 }
 
 bool compareOrders(dependencyNode x, dependencyNode y)
@@ -273,7 +278,9 @@ void printOutput()
 {
     for(int i=0; i<depList.size(); i++)
     {
-        cout<<"Target "<<depList[i].target<<" Order "<<depList[i].order<<"Depth "<<depList[i].depth<<endl;
+        cout<<"Target "<<depList[i].target<<" Order "<<depList[i].order<<"Depth "<<depList[i].depth
+        <<"isResolved "<<depList[i].isResolved
+        <<endl;
     }
 }
 int main(int argc, char* argv[])
@@ -284,14 +291,16 @@ int main(int argc, char* argv[])
     switch(argc)
     {
         case 2: /* Target specified*/
-                parseInputFile(argv[1]);
+                rootTarget = argv[1];
                 break;
 
         case 1: /*No specified target*/
-                parseInputFile(DEFAULT_TARGET);
+                rootTarget = string(DEFAULT_TARGET);
                 break;
     }
 
+    /*Parse input file*/
+    parseInputFile();
     /*Input file is parsed now. Resolve dependencies and figure out the order of execution*/
     determineOrderOfExec();
 

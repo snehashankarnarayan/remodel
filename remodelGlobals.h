@@ -4,8 +4,8 @@
 #include "remodelTypes.h"
 
 
- vector<dependencyNode> depList;
-extern string rootTarget;
- int globalOrder;
+vector<dependencyNode> depList;
+string rootTarget;
+int globalOrder;
 
 #endif
