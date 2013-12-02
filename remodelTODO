@@ -1,0 +1,10 @@
+1. different test cases: cyclic dependency, duplicates, missing files,  (later) work with valid inputs first. 
+2. md5 hashes
+3. paralelize processes. come up with an algo for this. 
+4. Let valid inputs work. Check for invalid inputs later. 
+5. Seperate utility functions like removing white space to a differnet file.
+
+//IMPORTANT
+1. Find a way to represent data and store the dependencies in a file under ./remodel. This has to be read from when resolving dependencies.
+
+basically only files that have not been built yet have to be built again. This is done with md5 hashes, just think of this data can be easily written and read
