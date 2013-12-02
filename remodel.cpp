@@ -6,9 +6,8 @@ dependencyNode makeNode(bool isLeaf, string target, vector<string> vList = NULL,
     d.target = target;
     d.source = vList;
     d.command = command;
-    d.order = 0;
     d.isResolved = isLeaf;
-    d.depth = 0;
+    d.depth = -1;
 
     return d;
 }
@@ -21,19 +20,6 @@ void computeMd5OfFile(char* fileName)
                        (std::istreambuf_iterator<char>()    ) );
 
     MD5((unsigned char*) content.c_str(), content.size(), result);
-}
-
-void findAndParseRoot()
-{
-    for(int i=0; i<depList.size(); i++)
-    {
-        if(depList[i].target == rootTarget)
-        {
-            /* Make it the last statement to be evaluated*/
-            depList[i].order = depList.size();
-            break;
-        }
-    }
 }
 
 void parseInputFile()
@@ -115,16 +101,18 @@ void parseLine(string line)
         /*Deal with the command*/
         found = currentDependencies.find("\"");
         if(found != string::npos)
-        command = removeWhiteSpace(currentDependencies.substr(found, currentDependencies.length() - found));
+        command = currentDependencies.substr(found, currentDependencies.length() - found);
 
     }
-    depList.push_back(makeNode(false, target, vList, command));
+    if(target.length() != 0)
+    {
+        depList.push_back(makeNode(false, target, vList, command));
+    }
 }
 
 void initialize()
 {
-    /*Leaf nodes are already at 0*/
-    globalOrder = 1;
+
 }
 
 void printParsedOutput()
@@ -132,7 +120,7 @@ void printParsedOutput()
     for(int i=0; i<depList.size(); i++)
     {
         cout<<endl<<"New NODE"<<endl;
-        cout<<"Target "<<depList[i].target<<endl;
+        cout<<"Target:"<<depList[i].target<<":"<<endl;
         cout<<"Command "<<depList[i].command<<endl;
         for(int j=0; j<depList[i].source.size(); j++)
         {
@@ -166,8 +154,7 @@ void buildLeafNodes()
                 dependencyNode d;
                 d.target = nodeName;
                 d.isResolved = true;
-                d.order = 0;
-                d.depth = 0;
+                d.depth = -1;
                 depList.push_back(d);
             }
         }
@@ -186,33 +173,23 @@ bool allNotResolved()
     return false;
 }
 
-bool sourceResolved(string source, int& depth)
+bool sourceResolved(string source)
 {
     for(int i=0; i<depList.size(); i++)
     {
         if(source == depList[i].target)
         {
-            depth = depList[i].depth;
             return depList[i].isResolved;
         }
     }
 }
 
-bool areAllSourcesResolved(int index, int iterationCount, int& maxDepth)
+bool areAllSourcesResolved(int index)
 {
-    int depth = -1;
     for(int i=0; i<depList[index].source.size(); i++)
     {
-        if(sourceResolved(depList[index].source[i], depth))
+        if(!sourceResolved(depList[index].source[i]))
         {
-            if(depth > maxDepth)
-            {
-                maxDepth = depth;
-            }
-        }
-        else
-        {
-            /*One of the sources is not yet resolved, return false*/
             return false;
         }
     }
@@ -239,34 +216,22 @@ void determineOrderOfExec()
             maxDepth = -1;
             if(!depList[i].isResolved)
             {
-                if(areAllSourcesResolved(i, iterationCount, maxDepth))
+                /*Check if all the sources of the current node is resolved*/
+                if(areAllSourcesResolved(i))
                 {
                     depList[i].isResolved = true;
                     depList[i].depth = iterationCount;
-                    if(maxDepth == iterationCount)
-                    {
-                        /*This node's dependency was also involved in the current iteration, so the dependent node should
-                        be built first*/
-                        depList[i].order = ++globalOrder;
-                    }
-                    else
-                    {
-                        depList[i].order = globalOrder;
-                    }
-
                 }
             }
         }
 
         ++iterationCount;
     }
-
-    findAndParseRoot();
 }
 
 bool compareOrders(dependencyNode x, dependencyNode y)
 {
-    return (x.order < y.order);
+    return (x.depth < y.depth);
 }
 
 void sortOrder()
@@ -278,7 +243,7 @@ void printOutput()
 {
     for(int i=0; i<depList.size(); i++)
     {
-        cout<<"Target "<<depList[i].target<<" Order "<<depList[i].order<<"Depth "<<depList[i].depth
+        cout<<"Target "<<depList[i].target<<"Depth "<<depList[i].depth
         <<"isResolved "<<depList[i].isResolved
         <<endl;
     }
