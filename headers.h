@@ -13,8 +13,8 @@
 #include <sys/wait.h>
 #include <stdlib.h>
 #include <openssl/md5.h>
-#include "remodelTypes.h"
-#include "remodelGlobals.h"
+#include "Types.h"
+#include "Globals.h"
 #include "functionDefinitions.h"
 
 using namespace std;
