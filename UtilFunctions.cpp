@@ -1,5 +1,8 @@
 #include "headers.h"
 
+vector<dependencyNode> depList;
+string rootTarget;
+
 bool compareOrders(dependencyNode x, dependencyNode y)
 {
     return (x.depth < y.depth);

@@ -1,5 +1,8 @@
 #include "headers.h"
 
+extern vector<dependencyNode> depList;
+extern string rootTarget;
+
 dependencyNode makeNode(bool isLeaf, string target, vector<string> vList = NULL, string command = "")
 {
     dependencyNode d;

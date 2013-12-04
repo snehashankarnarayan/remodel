@@ -1,5 +1,7 @@
 #include "headers.h"
 
+extern vector<dependencyNode> depList;
+extern string rootTarget;
 void printOutput()
 {
     for(int i=0; i<depList.size(); i++)
