@@ -31,7 +31,7 @@ bool checkAndCreateDirectory()
     return true;
 }
 
-void stringcopy(unsigned char dest[], const char src[])
+void stringcopy(unsigned char dest[], unsigned char src[])
 {
     int i;
     for(i = 0; src[i]!='\0';i++)

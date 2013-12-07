@@ -55,9 +55,9 @@ int main(int argc, char* argv[])
     /*Input file is parsed now. Resolve dependencies and figure out the order of execution*/
     buildLeafNodes();
 
-
-    md5Hashing();
-    resolveBuilds();
+    printOutput();
+   // md5Hashing();
+    //resolveBuilds();
     determineOrderOfExec();
     //rebuildBasedOnHashes();
 
@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
     sortOrder();
 
     /*Execute code that is to be built*/
-   // runParallel();
+    runParallel();
 
 
     cout<<endl<<endl<<"Final"<<endl;

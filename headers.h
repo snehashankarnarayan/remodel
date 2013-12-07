@@ -17,6 +17,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <omp.h>
 #include "Types.h"
 #include "functionDefinitions.h"
 
