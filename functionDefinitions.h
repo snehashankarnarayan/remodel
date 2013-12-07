@@ -25,6 +25,20 @@ void determineOrderOfExec();
 bool compareOrders(dependencyNode x, dependencyNode y);
 void sortOrder();
 void printOutput();
+void storeMD5Hashes();
+void runParallel();
+bool checkAndCreateDirectory();
+void markTargetAsBuilt(string fileName);
+void stringcopy(unsigned char dest[], const char src[]);
 
+/* MD5 Hashing related functions */
+void computeMd5OfFile(char fileName[], unsigned char* result);
+void storeMD5Hashes();
+bool checkAgainstMD5Hashes();
+void md5Hashing();
+void resolveBuilds();
+
+/*Paralellize*/
+void runParallel();
 
 #endif

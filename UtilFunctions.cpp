@@ -12,20 +12,31 @@ void sortOrder()
 {
     sort(depList.begin(), depList.end(), compareOrders);
 }
-/*
-void computeMd5OfFile(char* fileName)
-{
-    unsigned char result[MD5_DIGEST_LENGTH];
-    std::ifstream ifs(fileName);
-    std::string content( (std::istreambuf_iterator<char>(ifs) ),
-                       (std::istreambuf_iterator<char>()    ) );
 
-    MD5((unsigned char*) content.c_str(), content.size(), result);
-}
-*/
 string removeWhiteSpace(string str)
 {
     str.erase (std::remove(str.begin(), str.end(),' '), str.end());
     return str;
 }
 
+bool checkAndCreateDirectory()
+{
+    struct stat st;
+    if(stat(REMODEL_DIR_PATH, &st) == -1)
+    {
+        /*Directory doesnt exist, create one*/
+        mkdir(REMODEL_DIR_PATH, 0777);
+        return false;
+    }
+    return true;
+}
+
+void stringcopy(unsigned char dest[], const char src[])
+{
+    int i;
+    for(i = 0; src[i]!='\0';i++)
+    {
+        dest[i] = src[i];
+    }
+    dest[i] = '\0';
+}

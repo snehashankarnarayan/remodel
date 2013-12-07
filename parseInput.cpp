@@ -6,10 +6,17 @@ void parseInputFile()
 {
     fstream fp;
     string line;
-    fp.open(MAKEFILE);
-    while(getline(fp, line))
+    try
     {
-        parseLine(line);
+        fp.open(MAKEFILE);
+        while(getline(fp, line))
+        {
+            parseLine(line);
+        }
+    }
+    catch(...)
+    {
+        cout<<"File read exception"<<endl;
     }
 }
 
@@ -77,12 +84,20 @@ void parseLine(string line)
         /*Deal with the command*/
         found = currentDependencies.find("\"");
         if(found != string::npos)
-        command = currentDependencies.substr(found, currentDependencies.length() - found);
-
+        {
+            command = currentDependencies.substr(found, currentDependencies.length() - found);
+        }
     }
     if(target.length() != 0)
     {
-        depList.push_back(makeNode(false, target, vList, command));
+
+        dependencyNode d;
+        d = makeNode(false, target, vList, command);
+        cout<<"succesfully returned"<<endl;
+        //d = depList[0];
+        cout<<"does anything worlk"<<endl;
+        depList.push_back(d);
+
     }
 }
 

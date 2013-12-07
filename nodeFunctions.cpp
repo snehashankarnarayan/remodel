@@ -11,6 +11,10 @@ dependencyNode makeNode(bool isLeaf, string target, vector<string> vList = NULL,
     d.command = command;
     d.isResolved = isLeaf;
     d.depth = -1;
+    d.isBuilt = false;
+    d.builtCounter = 0;
+
+    cout<<target<<endl;
 
     return d;
 }
@@ -82,6 +86,75 @@ bool areAllSourcesResolved(int index)
 
     /*All sources resolved*/
     return true;
-
 }
 
+
+//=======================================================
+// BUILDING related code
+//========================================================
+void markTargetAsBuilt(string fileName)
+{
+    for(int i=0; i<depList.size();i++)
+    {
+        if(depList[i].target == fileName)
+        {
+            depList[i].isBuilt = true;
+        }
+    }
+}
+
+bool allNotBuilt()
+{
+    for(int i=0; i<depList.size(); i++)
+    {
+        if(!depList[i].isBuilt)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool sourceBuilt(string source)
+{
+    for(int i=0; i<depList.size(); i++)
+    {
+        if(source == depList[i].target)
+        {
+            return depList[i].isBuilt;
+        }
+    }
+}
+
+bool areAllSourcesBuilt(int index)
+{
+    for(int i=0; i<depList[index].source.size(); i++)
+    {
+        if(!sourceBuilt(depList[index].source[i]))
+        {
+            return false;
+        }
+    }
+
+    /*All sources resolved*/
+    return true;
+}
+
+void resolveBuilds()
+{
+   while(allNotBuilt())
+    {
+        for(int i=0; i<depList.size(); i++)
+        {
+            if(!depList[i].isBuilt)
+            {
+                /*Check if all the sources of the current node is resolved*/
+                if(areAllSourcesBuilt(i))
+                {
+                    depList[i].isResolved = true;
+                    depList[i].isBuilt = true;
+                }
+            }
+        }
+    }
+}

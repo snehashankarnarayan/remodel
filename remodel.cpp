@@ -12,11 +12,6 @@ void determineOrderOfExec()
     int iterationCount = 0;
     int maxDepth;
 
-    printOutput();
-    /*Resolve leaf nodes*/
-    buildLeafNodes();
-    printOutput();
-    /*Resolve the other nodes*/
     while(allNotResolved())
     {
         for(int i=0; i<depList.size(); i++)
@@ -58,14 +53,25 @@ int main(int argc, char* argv[])
     /*Parse input file*/
     parseInputFile();
     /*Input file is parsed now. Resolve dependencies and figure out the order of execution*/
+    buildLeafNodes();
+
+
+    md5Hashing();
+    resolveBuilds();
     determineOrderOfExec();
+    //rebuildBasedOnHashes();
+
 
     /*Sort and print order of execution*/
     sortOrder();
 
+    /*Execute code that is to be built*/
+   // runParallel();
+
+
     cout<<endl<<endl<<"Final"<<endl;
     printOutput();
-    //printParsedOutput();
+   // printParsedOutput();
     return 0;
 
 }

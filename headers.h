@@ -1,11 +1,12 @@
 #ifndef HEADERS_H
 #define HEADERS_H
 
-#include<iostream>
-#include<fstream>
-#include<string>
-#include<cstdlib>
-#include<algorithm>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <cstdlib>
+#include <cstring>
+#include <algorithm>
 #include <unistd.h>
 #include <sys/types.h>
 #include <errno.h>
@@ -13,6 +14,9 @@
 #include <sys/wait.h>
 #include <stdlib.h>
 #include <openssl/md5.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <dirent.h>
 #include "Types.h"
 #include "functionDefinitions.h"
 
