@@ -89,7 +89,6 @@ void parseLine(string line)
     }
     if(target.length() != 0)
     {
-
         dependencyNode d;
         d = makeNode(false, target, vList, command);
         depList.push_back(d);

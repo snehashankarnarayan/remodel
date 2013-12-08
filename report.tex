@@ -47,7 +47,7 @@ The filenames are extracted from the dependency graph and this module goes and c
 The dependencies specified in the dependency graph are resolved in this module. Since the leaf nodes are resolved (as they have no dependencies associated with them) we have a starting point for the algorithm. As long as all the nodes are not resolved, the algorithm goes on checking each target, as soon as all the dependencies are resolved the node is marked as resolved. The iteration at which the node is resolved is noted and sorting this field referred to as depth in the ascending order determines the order of execution. Multiple nodes can be in the same 'depth' and the commands associated with the nodes are the same depth can be executed in parallel.
 
 \subsection{Execution of the compiler statements}
-This module takes care of execution of the compiler commands in parallel. Parallelism is taken care of using multiple threads. 
+This module takes care of execution of the compiler commands in parallel. Parallelism is taken care of using multiple threads. OpenMP is used to make sure that things run in parallel. A maximum of 4 threads are used to run any set of commands in parallel.
 
 \section{Functionality provided}
 The order in which the dependencies are written can be anything, remodel takes care of the resolution. All that needs to be done by the user is to provide the dependencies in the specified grammar which is
@@ -76,13 +76,12 @@ This chapter briefly describes the testing that was done on remodel.
 \begin{itemize}
 \item Cyclic dependency
 \item Naive testcases i.e testcases where the input file has a lot of white spaces.
-\item 
 \end{itemize}
 
 \textbf{Specific testcases:}
 \begin{itemize}
 \item /test/testsuite1: This is a set of basic tests. The script "/basicTest" can be run to execute the tests in this suite.
-\item /test/testsuite2: This is a set of tests with more complicated dependency resolution. The script "/basicTest" can be run to execute the tests in this suite.
+\item /test/testsuite2: This is a set of tests with more complicated dependency resolution. 
 \end{itemize}
 
 \section{Environment testing}

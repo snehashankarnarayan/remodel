@@ -25,9 +25,21 @@ bar.o <- bar.cpp: "g++ -c bar.cpp -o bar.o"
 
 You should store the dependencies on disk in a special directory called .remodel/, so that remodel will not re-execute any commands unless a dependency has been violated.
 
-You may write remodel in the language of your choice, as long as that language is statically compiled (i.e., no JVM languages). Examples of such languages include C, C++, and Haskell (via the GHC compiler). 
+You may write remodel in the language of your choice, as long as that language is statically compiled (i.e., no JVM languages). Examples of such languages include C, C++, and Haskell (via the GHC compiler).
 
 Project implementation:
 =============================
 
-Project is being implemented in C++. Specify the input in a file named 'makefile', if a specific target has to be built specify the target.
+Requirements:
+* OPENSSL
+* OpenMP
+* STL
+
+Building REMODEL
+* 'make'. Remodel will get built and the object file is called 'remodel'
+
+Using remodel
+* Copy the executable into the directory where all the files that have to be built are present.
+* Specify the dependencies in the grammar described in the previous sections in a file named 'remodelFile'
+* Execute './remodel'
+
