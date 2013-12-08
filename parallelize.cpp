@@ -9,26 +9,29 @@ void runParallel()
     int i = 0;
     FILE *fp;
 
+    vector<string> commands;
+
     while(i < depList.size())
     {
         while(depth == depList[i].depth)
         {
-            if(depList[i].command.length() > 0 && !depList[i].isBuilt)
+            /*Make a vector of all commands to be executed in parallel*/
+           if(depList[i].command.length() > 0 && !depList[i].isBuilt)
             {
-                #pragma omp parallel_num_threads(4)
-                {
-                    string str = depList[i].command;
-                    cout<<"Command: "<<depList[i].command<<endl;
-                    str.erase (std::remove(str.begin(), str.end(),'"'), str.end());
-                    fp = popen(str.c_str(), "re");
-                    pclose(fp);
-                   // system("g++ -c foo.cpp -o foo.o");
-                }
+                string str = depList[i].command;
+                str.erase (std::remove(str.begin(), str.end(),'"'), str.end());
+                commands.push_back(str);
             }
 
             i++;
         }
 
+        /*Execute all of the commands in this depth in parallel*/
+        #pragma omp parallel for
+        for(int i=0; i<commands.size();i++)
+            system(commands[i].c_str());
+
+        commands.clear();
         depth++;
     }
 }

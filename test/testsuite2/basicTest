@@ -1,5 +1,0 @@
-rm -rf .remodel
-../../remodel .
-./remodel
-./change foo.cpp
-./remodel

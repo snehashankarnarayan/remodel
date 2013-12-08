@@ -14,47 +14,8 @@ class obj
 		}
 };
 
-
-int main()
-{
- /*yes*/
-
-	func();
-	func2();
-
-}
-
-
-//new line
-
-//new line
-
-//new line
-
-//new line
-
-//new line
-
-//new line
-
-//new line
-
-//new line
-
-//new line
-
-//new line
-
-//new line
-
-//new line
-
-//new line
-
-//new line
-
-//new line
-
+void func3()
+{}
 //new line
 
 //new line

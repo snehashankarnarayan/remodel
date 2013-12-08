@@ -11,7 +11,7 @@ class obj
 
 		}
 };
-void func()
+void func2()
 {
 	cout<<"Hellow world!"<<endl;
 }

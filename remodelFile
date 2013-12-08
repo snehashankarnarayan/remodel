@@ -1,4 +1,10 @@
-DEFAULT <- baz
-baz <- foo.o, bar.o: "g++ foo.o bar.o -o baz"
-foo.o <- foo.cpp : "g++ -c foo.cpp -o foo.o"
-bar.o <- bar.cpp: "g++ -c bar.cpp -o bar.o"
+DEFAULT <- a
+b.o <- c.o, f.o, j.o: "g++ f.o c.o j.o -o b.o"
+f.o <- e.o: "g++ e.o -o f.o"
+c.o <- f.o: "g++ f.o -o c.o"
+a <- b.o, c.o, a.o: "g++ b.o c.o a.o -o a"
+a.o <- a.cpp: "g++ -c a.cpp -o a.o"
+k.o <- k.cpp : "g++ -c k.cpp -o k.o"
+e.o <- e.cpp : "g++ -c e.cpp -o e.o"
+l.o <- l.cpp : "g++ -c l.cpp -o l.o"
+j.o <- k.o, l.o: "g++ k.o l.o -o j.o"

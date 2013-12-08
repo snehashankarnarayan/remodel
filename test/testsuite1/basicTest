@@ -1,5 +1,5 @@
 rm -rf .remodel
-../../remodel .
+cp ../../remodel .
 ./remodel
 ./change foo.cpp
 ./remodel

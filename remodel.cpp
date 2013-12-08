@@ -23,10 +23,7 @@ int main(int argc, char* argv[])
     /*Input file is parsed now. Resolve dependencies and figure out the order of execution*/
     buildLeafNodes();
     md5Hashing();
-
     resolveBuilds();
-
-
     determineOrderOfExec();
 
     /*Sort and print order of execution*/
@@ -34,12 +31,6 @@ int main(int argc, char* argv[])
 
     /*Execute code that is to be built*/
     runParallel();
-
-
-
-
-   // printOutput();
-   // printParsedOutput();
     return 0;
 
 }
