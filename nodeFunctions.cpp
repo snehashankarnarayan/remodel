@@ -61,28 +61,41 @@ bool allNotResolved()
     return false;
 }
 
-bool sourceResolved(string source)
+bool sourceResolved(string source, int& returnedDepth)
 {
     for(int i=0; i<depList.size(); i++)
     {
         if(source == depList[i].target)
         {
+            returnedDepth = depList[i].depth;
             return depList[i].isResolved;
         }
     }
 }
 
-bool areAllSourcesResolved(int index)
+bool areAllSourcesResolved(int index, int& maxDepth)
 {
+    int localDepth = -10;
+    int returnedDepth;
     for(int i=0; i<depList[index].source.size(); i++)
     {
-        if(!sourceResolved(depList[index].source[i]))
+
+        if(!sourceResolved(depList[index].source[i], returnedDepth))
         {
             return false;
+        }
+        else
+        {
+            /*Check against localDepth*/
+            if(returnedDepth > localDepth)
+            {
+                localDepth = returnedDepth;
+            }
         }
     }
 
     /*All sources resolved*/
+    maxDepth = localDepth;
     return true;
 }
 
@@ -101,9 +114,13 @@ void determineOrderOfExec()
             if(!depList[i].isResolved)
             {
                 /*Check if all the sources of the current node is resolved*/
-                if(areAllSourcesResolved(i))
+                if(areAllSourcesResolved(i, maxDepth))
                 {
                     depList[i].isResolved = true;
+                    if(maxDepth == iterationCount)
+                    {
+                        ++iterationCount;
+                    }
                     depList[i].depth = iterationCount;
                     somethingResolved = true;
                 }
