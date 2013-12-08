@@ -4,11 +4,12 @@ extern vector<dependencyNode> depList;
 extern string rootTarget;
 void printOutput()
 {
+    cout<<endl<<"output"<<endl;
     for(int i=0; i<depList.size(); i++)
     {
-        cout<<"Target "<<depList[i].target<<"Depth "<<depList[i].depth
-        <<"isResolved "<<depList[i].isResolved
-        <<"isBuilt" <<depList[i].isBuilt
+        cout<<"Target "<<depList[i].target<< "Depth "<<depList[i].depth
+        <<" isResolved "<<depList[i].isResolved
+        <<" isBuilt" <<depList[i].isBuilt
         <<endl;
     }
 }

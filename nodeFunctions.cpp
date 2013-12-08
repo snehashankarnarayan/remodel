@@ -42,6 +42,7 @@ void buildLeafNodes()
                 d.target = nodeName;
                 d.isResolved = true;
                 d.depth = -1;
+                d.isBuilt = false;
                 depList.push_back(d);
             }
         }
@@ -83,6 +84,34 @@ bool areAllSourcesResolved(int index)
 
     /*All sources resolved*/
     return true;
+}
+
+void determineOrderOfExec()
+{
+    int iterationCount = 0;
+    int maxDepth;
+    bool somethingResolved = true;
+
+    while(allNotResolved() && somethingResolved)
+    {
+        somethingResolved = false;
+        for(int i=0; i<depList.size(); i++)
+        {
+            maxDepth = -1;
+            if(!depList[i].isResolved)
+            {
+                /*Check if all the sources of the current node is resolved*/
+                if(areAllSourcesResolved(i))
+                {
+                    depList[i].isResolved = true;
+                    depList[i].depth = iterationCount;
+                    somethingResolved = true;
+                }
+            }
+        }
+
+        ++iterationCount;
+    }
 }
 
 
@@ -134,13 +163,23 @@ bool areAllSourcesBuilt(int index)
     }
 
     /*All sources resolved*/
-    return true;
+    if(depList[index].source.size())
+    {
+        return true;
+    }
+    else
+    {
+        /*Leaf nodes*/
+        return false;
+    }
 }
 
 void resolveBuilds()
 {
-   while(allNotBuilt())
+    bool somethingResolved = true;
+    while(allNotBuilt() && somethingResolved)
     {
+        somethingResolved = false;
         for(int i=0; i<depList.size(); i++)
         {
             if(!depList[i].isBuilt)
@@ -150,6 +189,7 @@ void resolveBuilds()
                 {
                     depList[i].isResolved = true;
                     depList[i].isBuilt = true;
+                    somethingResolved = true;
                 }
             }
         }

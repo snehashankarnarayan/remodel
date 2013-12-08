@@ -13,7 +13,7 @@ void runParallel()
     {
         while(depth == depList[i].depth)
         {
-            if(depList[i].command.length() > 0)
+            if(depList[i].command.length() > 0 && !depList[i].isBuilt)
             {
                 #pragma omp parallel_num_threads(4)
                 {
