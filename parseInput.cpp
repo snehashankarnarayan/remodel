@@ -63,8 +63,6 @@ vector<string> parseAndFillDependencyList(string currentDependencies)
     return vList;
 }
 
-
-
 void parseLine(string line)
 {
     size_t found;
@@ -93,11 +91,7 @@ void parseLine(string line)
 
         dependencyNode d;
         d = makeNode(false, target, vList, command);
-        cout<<"succesfully returned"<<endl;
-        //d = depList[0];
-        cout<<"does anything worlk"<<endl;
         depList.push_back(d);
-
     }
 }
 

@@ -32,9 +32,7 @@ void markTargetAsBuilt(string fileName);
 void stringcopy(unsigned char dest[], unsigned char src[]);
 
 /* MD5 Hashing related functions */
-void computeMd5OfFile(char fileName[], unsigned char result[]);
-void storeMD5Hashes();
-bool checkAgainstMD5Hashes();
+
 void md5Hashing();
 void resolveBuilds();
 

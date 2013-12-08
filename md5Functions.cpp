@@ -7,21 +7,38 @@ extern string rootTarget;
 vector<hashNode> currentHashList;
 vector<hashNode> oldHashList;
 
-hashNode makeNode(unsigned char hashValue[], string fileName)
+hashNode makeNode(string hashValue, string fileName)
 {
     hashNode h;
-    stringcopy(h.hashValue, hashValue);
+    h.hashValue = hashValue;
     h.fileName = fileName;
     return h;
 }
 
-void computeMd5OfFile(const char fileName[], unsigned char result[])
+void computeMd5OfFile(string fileName)
 {
-    std::ifstream ifs(fileName);
-    std::string content( (std::istreambuf_iterator<char>(ifs) ),
-                       (std::istreambuf_iterator<char>()    ) );
+    std::ifstream ifs;
+    unsigned char result[MD5_DIGEST_LENGTH] = "lol";
+    char* buffer;
+    ifs.open(fileName.c_str());
+    long long length;
 
-    MD5((unsigned char*) content.c_str(), content.size(), result);
+ //  std::string content( (std::istreambuf_iterator<char>(ifs) ),
+   //                   (std::istreambuf_iterator<char>()    ) );
+
+
+    ifs.seekg(0, std::ios::end);
+    length = ifs.tellg();
+    ifs.seekg(0, std::ios::beg);
+    buffer = new char[length];
+    ifs.read(buffer, length);
+    ifs.close();
+   // MD5((unsigned char*) content.c_str(), content.size(), result);
+     MD5((unsigned char*) buffer, length, result);
+    delete(buffer);
+
+    string hashResult = (string)(const char*)result;
+    currentHashList.push_back(makeNode(hashResult, fileName));
 }
 
 void storeMD5Hashes()
@@ -32,24 +49,23 @@ void storeMD5Hashes()
         {
             /*Is a leaf node, target will have the filename. Only leaf nodes are resolved
             initially.*/
-            unsigned char result[MD5_DIGEST_LENGTH];
-            computeMd5OfFile(depList[i].target.c_str(), result);
-            cout<<"ii"<<endl;
-            currentHashList.push_back(makeNode(result, depList[i].target));
-            cout<<"uu"<<endl;
+
+            computeMd5OfFile(depList[i].target);
         }
     }
-    cout<<"Out?"<<endl;
-    return;
 }
 
-bool findAndCheckHash(string fileName, unsigned char hashValue[])
+bool findAndCheckHash(string fileName, string hashValue)
 {
     for(int i=0;i<currentHashList.size(); i++)
     {
+       // cout<<"FileName"<<fileName<<endl;
+        //cout<<"Looped"<<currentHashList[i].fileName<<endl;
         if(currentHashList[i].fileName == fileName)
         {
-            if(strcmp(currentHashList[i].hashValue, hashValue) == 0)
+            //cout<<"Current:"<<currentHashList[i].hashValue<<endl;
+            //cout<<"Old:"<<hashValue<<endl;
+            if(currentHashList[i].hashValue == hashValue)
             {
                 return true;
             }
@@ -68,34 +84,40 @@ bool checkAgainstMD5Hashes()
 {
     ifstream ifs;
     string line;
-    size_t found;
-
+    int lineNumber = 3;
+    bool writeAgainFlag = false;
     string fileName;
-    unsigned char hashValue[MD5_DIGEST_LENGTH];
+    string hashValue;
 
     try
     {
         ifs.open(REMODEL_FILE_PATH);
         while(getline(ifs, line))
         {
-            found  = line.find(":");
-            if(found != string::npos)
+            if(lineNumber%2)
             {
-                /* Copy relevant data*/
-                 fileName = removeWhiteSpace(line.substr(0, found));
-                 stringcopy(hashValue, (unsigned char*)line.substr(found).c_str());
-            }
-
-            if(!findAndCheckHash(fileName, hashValue))
-            {
-                /*Values have changed so, write again*/
-                return true;
+                /*Copy file Name*/
+                fileName = line;
             }
             else
             {
-                /*Hashes are the same. No need to build file*/
-                markTargetAsBuilt(fileName);
+                /*Do computation*/
+
+                hashValue = line;
+               // cout<<"Fi:"<<fileName<<"line:"<<lineNumber<<"hash:"<<line<<endl;
+                if(!findAndCheckHash(fileName, hashValue))
+                {
+                    /*Values have changed so, write again*/
+                    cout<<"File "<<fileName<<" has changed"<<endl;
+                    writeAgainFlag = true;
+                }
+                else
+                {
+                    markTargetAsBuilt(fileName);
+                }
             }
+
+            lineNumber = (lineNumber+1)%2;
 
         }
     }
@@ -104,8 +126,9 @@ bool checkAgainstMD5Hashes()
         cout<<"File exception thrown: "<<endl;
     }
 
+    ifs.close();
     /*if this is reached then it means all values are new*/
-    return false;
+    return writeAgainFlag;
 }
 
 void writeMD5Hashes()
@@ -116,20 +139,19 @@ void writeMD5Hashes()
         ofs.open(REMODEL_FILE_PATH);
         for(int i=0; i< currentHashList.size(); i++)
         {
-            ofs << currentHashList[i].fileName.c_str() <<":"<< currentHashList[i].hashValue << endl;
+            ofs << currentHashList[i].fileName.c_str() <<endl<< currentHashList[i].hashValue << endl;
         }
-        ofs.close();
     }
     catch(...)
     {
         cout<<"File exception thrown: "<<endl;
     }
+    ofs.close();
 }
 
 void md5Hashing()
 {
     storeMD5Hashes();
-    cout<<"returns?"<<endl;
     if(checkAndCreateDirectory())
     {
         /*Directory exists => not the first run*/

@@ -27,7 +27,7 @@ typedef struct dependencyNode_t
 typedef struct
 {
     string fileName;
-    unsigned char hashValue[MD5_DIGEST_LENGTH];
+    string hashValue;
 }hashNode;
 
 #endif

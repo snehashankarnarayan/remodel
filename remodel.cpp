@@ -32,8 +32,6 @@ void determineOrderOfExec()
     }
 }
 
-
-
 int main(int argc, char* argv[])
 {
     initialize();
@@ -55,12 +53,10 @@ int main(int argc, char* argv[])
     /*Input file is parsed now. Resolve dependencies and figure out the order of execution*/
     buildLeafNodes();
 
-    printOutput();
-   // md5Hashing();
-    //resolveBuilds();
+    //printOutput();
+    md5Hashing();
+    resolveBuilds();
     determineOrderOfExec();
-    //rebuildBasedOnHashes();
-
 
     /*Sort and print order of execution*/
     sortOrder();
@@ -69,8 +65,8 @@ int main(int argc, char* argv[])
     runParallel();
 
 
-    cout<<endl<<endl<<"Final"<<endl;
-    printOutput();
+
+   // printOutput();
    // printParsedOutput();
     return 0;
 

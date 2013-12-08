@@ -13,9 +13,6 @@ dependencyNode makeNode(bool isLeaf, string target, vector<string> vList = NULL,
     d.depth = -1;
     d.isBuilt = false;
     d.builtCounter = 0;
-
-    cout<<target<<endl;
-
     return d;
 }
 

@@ -15,7 +15,7 @@ void runParallel()
         {
             if(depList[i].command.length() > 0)
             {
-                #pragma omp parallel
+                #pragma omp parallel_num_threads(4)
                 {
                     string str = depList[i].command;
                     cout<<"Command: "<<depList[i].command<<endl;
