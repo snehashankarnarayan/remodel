@@ -1,3 +1,8 @@
+//=======================================================================================
+// This file contains all the modules related to building the dependency graph and also
+// contains the algorithm for determining the order of execution. This also contains the
+// code related to finding which dependencies need not be built based on MD5 hashes.
+//=======================================================================================
 #include "headers.h"
 
 extern vector<dependencyNode> depList;

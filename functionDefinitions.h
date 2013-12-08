@@ -1,22 +1,19 @@
+//=======================================================================================
+// This file contains all https://www.google.com/ionsthe function declarat
+//=======================================================================================
 #ifndef FUNC_DEFN_H
 #define FUNC_DEFN_H
 
-/*Parse input files*/
-
+/*Input parse related functions*/
 void parseInputFile(char* inputFile);
 void parseLine(string line);
-void printOutput();
-string removeWhiteSpace(string);
-dependencyNode makeNode(bool isLeaf, string target, vector<string> vList, string command);
-void computeMd5OfFile(char* fileName);
-void findAndParseRoot();
 void parseInputFile();
+
+/*Node related functions*/
+dependencyNode makeNode(bool isLeaf, string target, vector<string> vList, string command);
+void findAndParseRoot();
 vector<string> parseAndFillDependencyList(string currentDependencies);
-string removeWhiteSpace(string str);
-void parseLine(string line);
-void initialize();
 bool nodeExists(string nodeName);
-void printParsedOutput();
 void buildLeafNodes();
 bool allNotResolved();
 bool sourceResolved(string source);
@@ -24,19 +21,24 @@ bool areAllSourcesResolved(int index);
 void determineOrderOfExec();
 bool compareOrders(dependencyNode x, dependencyNode y);
 void sortOrder();
-void printOutput();
-void storeMD5Hashes();
-void runParallel();
-bool checkAndCreateDirectory();
-void markTargetAsBuilt(string fileName);
-void stringcopy(unsigned char dest[], unsigned char src[]);
-
-/* MD5 Hashing related functions */
-
-void md5Hashing();
 void resolveBuilds();
+void markTargetAsBuilt(string fileName);
 
-/*Paralellize*/
+/*Parallelism related functions*/
 void runParallel();
+
+/*MD5 related functions*/
+void computeMd5OfFile(char* fileName);
+void storeMD5Hashes();
+void md5Hashing();
+
+/*Output related functions*/
+void printOutput();
+void printParsedOutput();
+
+/*Utility functions*/
+string removeWhiteSpace(string);
+string removeWhiteSpace(string str);
+bool checkAndCreateDirectory();
 
 #endif

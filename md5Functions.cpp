@@ -1,3 +1,8 @@
+//=======================================================================================
+// This file contains all the code required to calculate MD5 hashes of the input files.
+// Storing of the hashes in .remodel/dependency is done here. Also, checking the hash
+// values against the stored file and marking the nodes as built is also done here.
+//=======================================================================================
 #include "headers.h"
 
 extern vector<dependencyNode> depList;
@@ -25,6 +30,7 @@ void computeMd5OfFile(string fileName)
         ifs.open(fileName.c_str());
         long long length;
 
+        /*read entire file*/
         ifs.seekg(0, std::ios::end);
         length = ifs.tellg();
         ifs.seekg(0, std::ios::beg);

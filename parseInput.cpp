@@ -1,3 +1,6 @@
+//=======================================================================================
+// This file contains all the modules required for parsing the input file.
+//=======================================================================================
 #include "headers.h"
 
 extern vector<dependencyNode> depList;

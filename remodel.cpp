@@ -1,3 +1,6 @@
+//=======================================================================================
+// This file contains the main() function for remodel.
+//=======================================================================================
 #include "headers.h"
 
 extern vector<dependencyNode> depList;

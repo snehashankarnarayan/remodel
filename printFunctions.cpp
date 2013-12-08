@@ -1,3 +1,6 @@
+//=======================================================================================
+// This file contains all the output related functions. Used for debugging and testing
+//=======================================================================================
 #include "headers.h"
 
 extern vector<dependencyNode> depList;

@@ -32,22 +32,22 @@ The ask of the project is to write an updated version of the make utility of lin
 The entire project has been coded in C++.
 
 \section{System Design}
-In order to successfully build the software being compiled, remodel does the following: processes input, build the dependency graph, take care of md5 hashing, resolve the dependencies and finally do the actual execution of the compiler statements.
+In order to successfully build the software being compiled, remodel does the following: processes input, build the dependency graph, take care of MD5 hashing, resolve the dependencies and finally do the actual execution of the compiler statements.
 
 \subsection{Process input}
 In order to read and understand the input, remodel parses the input file line by line. The target, command, and the list of dependencies are tokenized and understood by the parse module.
 
 \subsection{Building the dependency graph}
-The dependency graph is represented as an adjacency list using vectors. Each node of the graph is of a user defined type which is called "dependencyNode". The target, command and the dependencies of the target are stored in each node. Also various other fields required by the node like whether it has been resolved, where it needs to be rebuilt in a new execution are also stored. Nodes, referred to as leaf nodes are created for the nodes that are only the dependencies of a particular node. Therefore leaf nodes do not have a command or a list of dependencies associated with them, they'd just have the targets. This helps while running the dependency resolution algorithm.
+The dependency graph is represented as an adjacency list using vectors. Each node of the graph is of a user defined type which is called "dependencyNode". The target, command and the dependencies of the target are stored in each node. Also, various other fields required by the node like whether it has been resolved, where it needs to be rebuilt in a new execution are also stored. Nodes, referred to as leaf nodes are created for the nodes that are only the dependencies of a particular node. Therefore leaf nodes do not have a command or a list of dependencies associated with them, they'd just have the targets. This helps while running the dependency resolution algorithm.
 
 \subsection{MD5 hashing}
-The filenames are extracted from the dependency graph and this module goes and computes the MD5 hashes using the files that are provided. This module creates a file .remodel/dependency and stores all the MD5 hashes of the input file in the file. On the second build of the same files, this module reads the file that was created and checks if the hashes that were computed the previous execution are same as the ones computed in the current execution. if so, the corresponding file is not built again. Also if a target depends solely on this file, that target is also not built again. This is ensured by marking the "isBuilt" flag in the dependencyNode of that target.
+The filenames are extracted from the dependency graph and this module goes and computes the MD5 hashes using the files that are provided. This module creates a file .remodel/dependency and stores all the MD5 hashes of the input file in that file. On the second build of the same files, this module reads the file that was created and checks if the hashes that were computed during the previous execution are same as the ones computed in the current execution. If that is the case, the corresponding file is not built again. Also, if a target depends solely on this file, that target is also not built again. This is ensured by marking the "isBuilt" flag in the dependencyNode of that target.
 
 \subsection{Resolving the dependencies}
-The dependencies specified in the dependency graph are resolved in this module. Since the leaf nodes are resolved (as they have no dependencies associated with them) we have a starting point for the algorithm. As long as all the nodes are not resolved, the algorithm goes on checking each target, as soon as all the dependencies are resolved the node is marked as resolved. The iteration at which the node is resolved is noted and sorting this field referred to as depth in the ascending order determines the order of execution. Multiple nodes can be in the same 'depth' and the commands associated with the nodes are the same depth can be executed in parallel.
+The dependencies specified in the dependency graph are resolved in this module. Since the leaf nodes are resolved (as they have no dependencies associated with them) we have a starting point for the algorithm. As long as all the nodes are not resolved, the algorithm goes on checking each target, as soon as all the dependencies of the current node are resolved the node is marked as resolved. The iteration at which the node is resolved is noted and sorting this field referred to as 'depth' in the ascending order determines the order of execution. Multiple nodes can be in the same 'depth' and the commands associated with the nodes at the same depth are executed in parallel.
 
 \subsection{Execution of the compiler statements}
-This module takes care of execution of the compiler commands in parallel. Parallelism is taken care of using multiple threads. OpenMP is used to make sure that things run in parallel. A maximum of 4 threads are used to run any set of commands in parallel.
+This module takes care of execution of the compiler commands in parallel. Parallelism is taken care of using multiple threads. OpenMP is used to make sure that things run in parallel.
 
 \section{Functionality provided}
 The order in which the dependencies are written can be anything, remodel takes care of the resolution. All that needs to be done by the user is to provide the dependencies in the specified grammar which is
@@ -63,7 +63,7 @@ The input file has to be named "remodelFile" in order for the utility to work.
 %%%%%%%%%% Chapter 2 %%%%%%%%% %
 \chapter{Results}
 %
-When remodel is run on a remodelFile, the results seen on the CLI are the same results seen as when running the compiler commands individually. However if a file has changed from the previous execution, that fact is specified on the CLI.
+When remodel is run on a remodelFile, the results seen on the CLI are the same results seen as when running the compiler commands individually. However if a file has changed from the previous execution, that fact is specified on the CLI. After remodel is run, the object file generated for the input files can be run to check if remodel has actually successfully built the module.
 
 %%%%%%%%%% Chapter 3 %%%%%%%%%%
 \chapter{Testing}
@@ -76,21 +76,47 @@ This chapter briefly describes the testing that was done on remodel.
 \begin{itemize}
 \item Cyclic dependency
 \item Naive testcases i.e testcases where the input file has a lot of white spaces.
+\item Input file (remodelFile) missing
+\item Any of the files specified in the remodelFile not being found.
 \end{itemize}
+
 
 \textbf{Specific testcases:}
 \begin{itemize}
-\item /test/testsuite1: This is a set of basic tests. The script "/basicTest" can be run to execute the tests in this suite.
-\item /test/testsuite2: This is a set of tests with more complicated dependency resolution. 
+\item /test/testsuite1: This is a set of basic tests. The script "basicTest" can be run to execute the tests in this suite. Run "./basicTest" This runs remodel on the files in the directory, it changes one file and then runs remodel again. Only the targets depending on that particular file will be rebuilt.
+\item /test/testsuite2: This is a set of remodelFiles that were used to check if the dependency resolution graph worked accurately.
 \end{itemize}
 
-\section{Environment testing}
+\section{Testing platform}
 Remodel has been tested on the G++ compiler on the Linux platform.
+
+\section{Sample Input/Output}
+\begin{verbatim}
+sneha@sneha-ThinkPad-T430:~/remodel/test/testsuite1$ cat remodelFile 
+DEFAULT <- baz
+baz <- foo.o, bar.o, al.o, bl.o: "g++ foo.o bar.o al.o bl.o -o baz"
+foo.o <- foo.cpp : "g++ -c foo.cpp -o foo.o"
+bar.o <- bar.cpp: "g++ -c bar.cpp -o bar.o"
+al.o <- al.cpp : "g++ -c al.cpp -o al.o"
+bl.o <- bl.cpp: "g++ -c bl.cpp -o bl.o"
+sneha@sneha-ThinkPad-T430:~/remodel/test/testsuite1$ cat basicTest 
+rm -rf .remodel
+cp ../../remodel .
+./remodel
+./change foo.cpp
+./remodel
+sneha@sneha-ThinkPad-T430:~/remodel/test/testsuite1$ ./basicTest 
+File foo.cpp has changed
+sneha@sneha-ThinkPad-T430:~/remodel/test/testsuite1$ ./baz
+Hellow world!
+Hellow world!
+sneha@sneha-ThinkPad-T430:~/remodel/test/testsuite1 
+\end{verbatim}
 
 %%%%%%%%%% Chapter 4 %%%%%%%%%%
 \chapter{Setup}
 %
-This chapter describes the setup required to run the profiler
+This chapter describes the setup required to run remodel.
 \section{Requirements}
 The following libraries are required:
 \begin{itemize}
@@ -107,8 +133,9 @@ The following libraries are required:
 \section{Using remodel}
 \begin{itemize}
 \item Copy the executable into the directory where all the files that have to be built are present.
-\item Specify the dependencies in the grammar described in the previous sections in a file named 'remodelFile' 
+\item Specify the dependencies in the grammar described in the previous section, in a file named 'remodelFile' 
 \item Execute './remodel'
+\item Multiple instances of remodel should not be run simultaneously on the same directory.
 \end{itemize}
 
 \end{document}

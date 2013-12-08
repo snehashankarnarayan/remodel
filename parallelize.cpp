@@ -1,3 +1,7 @@
+//=======================================================================================
+// This file contains the code required for running the various commands in parallel.
+// OpenMP is used for multithreading.
+//=======================================================================================
 #include "headers.h"
 
 extern vector<dependencyNode> depList;

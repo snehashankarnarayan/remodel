@@ -1,3 +1,9 @@
+//=======================================================================================
+// This file contains the decription of the major data structures used.
+// dependencyNode: This refers to the nodes of the dependency resolution graph
+// hashNode: This refers to the datastructure used to store the MD5 hash and the
+//            corresponding filename.
+//=======================================================================================
 #ifndef REMODEL_TYPES_H
 #define REMODEL_TYPES_H
 
