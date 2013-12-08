@@ -20,6 +20,7 @@
 #include <omp.h>
 #include "Types.h"
 #include "functionDefinitions.h"
+#include "ErrorMsg.h"
 
 using namespace std;
 

@@ -16,7 +16,9 @@ void parseInputFile()
     }
     catch(...)
     {
-        cout<<"File read exception"<<endl;
+        cout<<"Input remodelFile read failed"<<endl;
+        cout<<REMODEL_ABORT<<endl;
+        exit(1);
     }
 }
 
@@ -29,7 +31,6 @@ vector<string> parseAndFillDependencyList(string currentDependencies)
 
     while(found != string::npos)
     {
-        //depList[depCounter].source[sourceCount++] = currentDependencies.substr(prev, found - 1);
         vList.push_back(currentDependencies.substr(prev, found - prev));
         prev = found+1;
         found = currentDependencies.find(",", prev);

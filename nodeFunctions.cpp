@@ -112,6 +112,13 @@ void determineOrderOfExec()
 
         ++iterationCount;
     }
+
+    if(!somethingResolved)
+    {
+        cout<<"Circular dependency exits."<<endl;
+        cout<<REMODEL_ABORT<<endl;
+        exit(1);
+    }
 }
 
 

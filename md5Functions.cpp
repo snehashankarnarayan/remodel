@@ -17,28 +17,33 @@ hashNode makeNode(string hashValue, string fileName)
 
 void computeMd5OfFile(string fileName)
 {
-    std::ifstream ifs;
-    unsigned char result[MD5_DIGEST_LENGTH] = "lol";
-    char* buffer;
-    ifs.open(fileName.c_str());
-    long long length;
+    try
+    {
+        std::ifstream ifs;
+        unsigned char result[MD5_DIGEST_LENGTH] = "lol";
+        char* buffer;
+        ifs.open(fileName.c_str());
+        long long length;
 
- //  std::string content( (std::istreambuf_iterator<char>(ifs) ),
-   //                   (std::istreambuf_iterator<char>()    ) );
+        ifs.seekg(0, std::ios::end);
+        length = ifs.tellg();
+        ifs.seekg(0, std::ios::beg);
+        buffer = new char[length];
+        ifs.read(buffer, length);
+        ifs.close();
 
+        MD5((unsigned char*) buffer, length, result);
+        delete(buffer);
 
-    ifs.seekg(0, std::ios::end);
-    length = ifs.tellg();
-    ifs.seekg(0, std::ios::beg);
-    buffer = new char[length];
-    ifs.read(buffer, length);
-    ifs.close();
-   // MD5((unsigned char*) content.c_str(), content.size(), result);
-     MD5((unsigned char*) buffer, length, result);
-    delete(buffer);
-
-    string hashResult = (string)(const char*)result;
-    currentHashList.push_back(makeNode(hashResult, fileName));
+        string hashResult = (string)(const char*)result;
+        currentHashList.push_back(makeNode(hashResult, fileName));
+    }
+    catch(...)
+    {
+        cout<<"File not found: "<<fileName<<endl;
+        cout<<REMODEL_ABORT<<endl;
+        exit(1);
+    }
 }
 
 void storeMD5Hashes()
@@ -59,12 +64,8 @@ bool findAndCheckHash(string fileName, string hashValue)
 {
     for(int i=0;i<currentHashList.size(); i++)
     {
-       // cout<<"FileName"<<fileName<<endl;
-        //cout<<"Looped"<<currentHashList[i].fileName<<endl;
         if(currentHashList[i].fileName == fileName)
         {
-            //cout<<"Current:"<<currentHashList[i].hashValue<<endl;
-            //cout<<"Old:"<<hashValue<<endl;
             if(currentHashList[i].hashValue == hashValue)
             {
                 return true;
@@ -123,7 +124,9 @@ bool checkAgainstMD5Hashes()
     }
     catch(...)
     {
-        cout<<"File exception thrown: "<<endl;
+        cout<<"File exception thrown in: "<<REMODEL_FILE_PATH<<endl;
+        cout<<REMODEL_ABORT<<endl;
+        exit(1);
     }
 
     ifs.close();
@@ -144,7 +147,9 @@ void writeMD5Hashes()
     }
     catch(...)
     {
-        cout<<"File exception thrown: "<<endl;
+        cout<<"Cannot write to file "<<REMODEL_FILE_PATH<<endl;
+        cout<<REMODEL_ABORT<<endl;
+        exit(1);
     }
     ofs.close();
 }
